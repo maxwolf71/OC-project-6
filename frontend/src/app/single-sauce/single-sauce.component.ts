@@ -73,7 +73,7 @@ export class SingleSauceComponent implements OnInit {
         this.likePending = false;
         this.disliked = disliked;
         if (disliked) {
-          this.sauce.dislikes++;
+          this.sauce.dislikes++;  
         } else {
           this.sauce.dislikes--;
         }

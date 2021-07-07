@@ -1,4 +1,6 @@
+// import http to create server
 const http = require('http')
+//import app from app.js 
 const app = require('./app')
 
 const normalizePort = val => {
@@ -11,16 +13,18 @@ const normalizePort = val => {
     return port
   }
   return false
-};
+}
+
+// server will listen on default port if available otherwise on port 3000
 const port = normalizePort(process.env.PORT || '3000')
 app.set('port', port)
 
 const errorHandler = error => {
   if (error.syscall !== 'listen') {
-    throw error;
+    throw error
   }
-  const address = server.address();
-  const bind = typeof address === 'string' ? 'pipe ' + address : 'port: ' + port;
+  const address = server.address()
+  const bind = typeof address === 'string' ? 'pipe ' + address : 'port: ' + port
   switch (error.code) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges.')
@@ -29,12 +33,13 @@ const errorHandler = error => {
     case 'EADDRINUSE':
       console.error(bind + ' is already in use.')
       process.exit(1)
-      break;
+      break
     default:
       throw error
   }
-};
+}
 
+// ask server to use express
 const server = http.createServer(app)
 
 server.on('error', errorHandler)
@@ -42,6 +47,6 @@ server.on('listening', () => {
   const address = server.address()
   const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port
   console.log('Listening on ' + bind)
-});
+})
 
 server.listen(port)

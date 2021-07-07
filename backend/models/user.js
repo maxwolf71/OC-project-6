@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+// plugin to make sure same email can't be used twice
 const uniqueValidator = require('mongoose-unique-validator')
 
 const userSchema = mongoose.Schema({
