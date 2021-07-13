@@ -4,6 +4,10 @@ const path = require('path')
 const app = express()
 require('dotenv').config()
 
+// sets up various HTTP headers to prevent attacks like Cross-Site-Scripting(XSS)
+const helmet = require('helmet')
+app.use(helmet())
+
 const saucesRoutes = require('./routes/sauce')
 const userRoutes = require('./routes/user')
 
@@ -28,7 +32,7 @@ app.use((req, res, next) => {
     // pass on to next middleware
     next()
 })
-// replaces body-parser, included in express
+// replaces body-parser, now included in express
 app.use(express.json())
 
 // add image
