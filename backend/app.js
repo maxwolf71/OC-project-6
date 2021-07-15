@@ -2,11 +2,25 @@ const express = require('express')
 const mongoose = require('mongoose')
 const path = require('path')
 const app = express()
+// hide MongoDB userName & password
 require('dotenv').config()
 
 // sets up various HTTP headers to prevent attacks like Cross-Site-Scripting(XSS)
 const helmet = require('helmet')
 app.use(helmet())
+
+// limit number of request in a certain time frame
+const rateLimit = require('express-rate-limit')
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 50, // limit each IP to 50 requests per windowMs
+    message: "Too many requests, please try again after 15 minutes"
+
+    // this above message is shown to user when max requests is exceeded
+})
+
+app.use(limiter); // rate limiting applies to all routes
 
 const saucesRoutes = require('./routes/sauce')
 const userRoutes = require('./routes/user')

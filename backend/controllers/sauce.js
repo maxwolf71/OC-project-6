@@ -96,7 +96,7 @@ exports.rateSauce = (req, res, next) => {
 
           // if user already disliked
           if (sauce.usersDisliked.find(user => user === req.body.userId)) {
-            // is th e user in the usersDisliked array
+            // check if user in the usersDisliked array
             Sauce.updateOne({ _id: req.params.id }, {
               // decrease dislikes by 1 and remove user from usersDisliked
               $inc: { dislikes: -1 },
