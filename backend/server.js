@@ -1,7 +1,6 @@
-// import http to create server
-const http = require('http')
-//import app from app.js 
-const app = require('./app')
+const http   = require('http') // import http to create server
+const app    = require('./app') //import express from app.js 
+const server = http.createServer(app) // ask server to use express
 
 const normalizePort = val => {
   const port = parseInt(val, 10)
@@ -9,14 +8,13 @@ const normalizePort = val => {
   if (isNaN(port)) {
     return val
   }
-  if (port >= 0) {
+  if (port >= 0) { 
     return port
   }
   return false
 }
 
-// server will listen on default port if available otherwise on port 3000
-const port = normalizePort(process.env.PORT || '3000')
+const port = normalizePort(process.env.PORT || '3000') // server will listen on default port if available otherwise on port 3000
 app.set('port', port)
 
 const errorHandler = error => {
@@ -38,9 +36,6 @@ const errorHandler = error => {
       throw error
   }
 }
-
-// ask server to use express
-const server = http.createServer(app)
 
 server.on('error', errorHandler)
 server.on('listening', () => {

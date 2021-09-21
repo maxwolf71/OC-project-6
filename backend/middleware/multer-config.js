@@ -1,22 +1,19 @@
-// helps with downloading files in http requests
-const multer = require('multer')
+const multer = require('multer') // helps with downloading files in http requests
 
-// dictionnary of image types (to use below  )
-const MIME_TYPES = {
+const MIME_TYPES = { // dictionnary of image types (to use below  )
     'image/jpg': 'jpg',
     'image/jpeg': 'jpg',
     'image/png': 'png'
 }
-// store image on disk with multer
-const storage = multer.diskStorage({
+
+const storage = multer.diskStorage({ // store image on disk with multer
     // where to store
     destination: (req, file, callback) => {
         callback(null, 'images')
     },
     // what type of file
-    filename: (req, file, callback) => {
-        // remove all spaces, replace with _
-        const name = file.originalname.split(' ').join('_')
+    filename: (req, file, callback) => {_
+        const name = file.originalname.split(' ').join('_') // remove all spaces, replace with _
         const extension = MIME_TYPES[file.mimetype]
         callback(null, name + Date.now() + '.' + extension)
     }

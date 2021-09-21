@@ -1,55 +1,41 @@
-// hash password
-const bcrypt = require('bcrypt')
-// for creating and verifying token
-const jwt = require('jsonwebtoken')
+const User   = require('../models/user')
 
-const User = require('../models/user')
+const bcrypt = require('bcrypt') // hash password
+const jwt    = require('jsonwebtoken') // for creating and verifying token
 
-// signup for new user 
+// SIGNUP **********************************
 exports.signup = (req, res, next) => {
-    // hash password
-    bcrypt.hash(req.body.password, 10)
+    bcrypt.hash(req.body.password, 10) // hash password
         .then(hash => {
             const user = new User({
-                // email in body of request
-                email: req.body.email,
-                // hashed password 
-                password: hash
+                email: req.body.email, // email in body of request
+                password: hash // hashed password  
             })
-            // save user in DB
-            user.save()
-                .then(() => res.status(201).json({ message: 'User created !' }))
+            user.save() // save user in DB
+                .then(() => res.status(201).json({ message: 'User created !' })) 
                 .catch(error => res.status(500).json({ error }))
         })
         .catch(error => res.status(500).json({ error }))
 }
 
-// login for currrent users
+// LOGIN **********************************
 exports.login = (req, res, next) => {
-    // check if entered email is in the DB
-    User.findOne({ email: req.body.email })
+    User.findOne({ email: req.body.email }) // check if entered email is in the DB
         .then(user => {
-            // if user not found
-            if (!user) {
+            if (!user) { // if user not found
                 return res.status(404).json({ error: 'User not found !' })
             }
-            // if user found then compare password in request to password in DB
-            bcrypt.compare(req.body.password, user.password)
+            bcrypt.compare(req.body.password, user.password) // if user found then compare password in request to password in DB
                 .then(valid => {
-                    // if password doesn't match
-                    if (!valid) {
+                    if (!valid) {  // if password doesn't match
                         return res.status(401).json({ error: 'Password not valid !' })
-                    }
-                    // if password matches   
-                    res.status(200).json({
+                    } 
+                    res.status(200).json({ // if password matches  
                         userId: user._id,
                         token: jwt.sign(
-                            // use current user's id
-                            { userId: user._id },
-                            // temporary string
-                            'RANDOM_TOKEN_SECRET',
-                            // connect duration
-                            { expiresIn: '24h' }
+                            { userId: user._id },  // use current user's id
+                            'RANDOM_TOKEN_SECRET', // temporary string
+                            { expiresIn: '24h' } // connect duration
                         )
                     })
                 })

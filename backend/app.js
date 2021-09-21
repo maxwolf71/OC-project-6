@@ -2,32 +2,22 @@ const express = require('express')
 const mongoose = require('mongoose')
 const path = require('path')
 const app = express()
-// hide MongoDB userName & password
-require('dotenv').config()
+const helmet = require('helmet') // sets up various HTTP headers to prevent attacks like Cross-Site-Scripting(XSS)
 
-// sets up various HTTP headers to prevent attacks like Cross-Site-Scripting(XSS)
-const helmet = require('helmet')
-app.use(helmet())
+const userRoutes = require('./routes/user')
+const saucesRoutes = require('./routes/sauce')
 
-// limit number of request in a certain time frame
-const rateLimit = require('express-rate-limit')
 
+const rateLimit = require('express-rate-limit') // limit number of request in a certain time frame
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 50, // limit each IP to 50 requests per windowMs
-    message: "Too many requests, please try again after 15 minutes"
-
-    // this above message is shown to user when max requests is exceeded
+    windowMs: 60 * 60 * 1000, // 60 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: "Too many requests, please try again after 30 minutes" // this message is shown to user when max requests is exceeded
 })
 
-app.use(limiter); // rate limiting applies to all routes
-
-const saucesRoutes = require('./routes/sauce')
-const userRoutes = require('./routes/user')
-
-// hide MongoDB userName & password
+// MongoDB *******************************************************
+require('dotenv').config() // hide MongoDB userName & password
 const connectionString = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.bjiad.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
-
 mongoose.connect(connectionString,
     {
         useNewUrlParser: true,
@@ -36,25 +26,22 @@ mongoose.connect(connectionString,
     .then(() => console.log('Successfully connected to MongoDB !'))
     .catch(() => console.log('Failed to connect to MongoDB !'))
 
-app.use((req, res, next) => {
-    // allow access to all users
-    res.setHeader('Access-Control-Allow-Origin', '*')
-    // allow certain types of headers
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization')
-    // allow certain types of methods
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
-    // pass on to next middleware
-    next()
+// Deal with CORS errors ****************************************
+app.use((req, res, next) => { 
+    res.setHeader('Access-Control-Allow-Origin', '*') // allow access to all users
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization') // allow certain types of headers
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS') // allow certain types of methods
+    next() // pass on to next middleware
 })
-// replaces body-parser, now included in express
-app.use(express.json())
 
-// add image
-app.use('/images', express.static(path.join(__dirname, 'images')))
+app.use(express.json()) // replaces body-parser, now included in express
 
-app.use('/api/sauces', saucesRoutes)
+app.use(helmet())
+app.use(limiter) // rate limiting applies to all routes
+app.use('/images', express.static(path.join(__dirname, 'images'))) // add image
+
 app.use('/api/auth', userRoutes)
+app.use('/api/sauces', saucesRoutes)
 
-// export to use elsewhere
-module.exports = app
+module.exports = app // export to use elsewhere
 
