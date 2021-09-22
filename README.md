@@ -21,7 +21,7 @@ Backend :
     Installer NPM : npm install
     Pour utiliser le serveur, chargez le package nodemon : npm install -g nodemon
     Lancer le serveur côté backend : nodemon server
-    Garder ce terminal ouvert durant toute votre session sur le site ❗
+    Garder ce terminal ouvert durant toute votre session sur le site
 
 💿 Pour finir :
 
