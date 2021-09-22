@@ -10,7 +10,6 @@ const helmet = require('helmet') // sets up various HTTP headers to prevent atta
 const userRoutes = require('./routes/user')
 const saucesRoutes = require('./routes/sauce')
 
-
 const rateLimit = require('express-rate-limit') // limit number of request in a certain time frame
 const limiter = rateLimit({
 
