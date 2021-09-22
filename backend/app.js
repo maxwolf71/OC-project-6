@@ -6,11 +6,14 @@ const app = express()
 
 const helmet = require('helmet') // sets up various HTTP headers to prevent attacks like Cross-Site-Scripting(XSS)
 
+
 const userRoutes = require('./routes/user')
 const saucesRoutes = require('./routes/sauce')
 
+
 const rateLimit = require('express-rate-limit') // limit number of request in a certain time frame
 const limiter = rateLimit({
+
     windowMs: 60 * 60 * 1000, // 60 minutes
     max: 100, // limit each IP to 100 requests per windowMs
     message: "Too many requests, please try again after 30 minutes" // this message is shown to user when max requests is exceeded
@@ -20,7 +23,7 @@ const limiter = rateLimit({
 
 require('dotenv').config() // hide MongoDB userName, password & DB name 
 const connectionString = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.bjiad.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
-mongoose.connect(connectionString, // connect to MongoDB
+mongoose.connect(connectionString,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -44,9 +47,9 @@ app.use(helmet())
 app.use(limiter) // rate limiting applies to all routes
 app.use('/images', express.static(path.join(__dirname, 'images'))) // add image
 
+
 // Routes
-app.use('/api/sauces', saucesRoutes)
 app.use('/api/auth', userRoutes)
+app.use('/api/sauces', saucesRoutes)
 
 module.exports = app // export to use elsewhere
-
