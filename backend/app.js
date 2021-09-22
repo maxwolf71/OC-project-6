@@ -1,12 +1,13 @@
+
 const express = require('express')
-const mongoose = require('mongoose')
-const path = require('path')
+const mongoose = require('mongoose') // Package to help to communicate with MongoDB
+const path = require('path') // help to generate path for images
 const app = express()
+
 const helmet = require('helmet') // sets up various HTTP headers to prevent attacks like Cross-Site-Scripting(XSS)
 
 const userRoutes = require('./routes/user')
 const saucesRoutes = require('./routes/sauce')
-
 
 const rateLimit = require('express-rate-limit') // limit number of request in a certain time frame
 const limiter = rateLimit({
@@ -16,18 +17,21 @@ const limiter = rateLimit({
 })
 
 // MongoDB *******************************************************
-require('dotenv').config() // hide MongoDB userName & password
-const connectionString = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.bjiad.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
-mongoose.connect(connectionString,
+
+require('dotenv').config() // hide MongoDB userName, password & DB name 
+const connectionString = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.bjiad.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
+mongoose.connect(connectionString, // connect to MongoDB
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
     .then(() => console.log('Successfully connected to MongoDB !'))
     .catch(() => console.log('Failed to connect to MongoDB !'))
+mongoose.set('useCreateIndex', true)
 
 // Deal with CORS errors ****************************************
-app.use((req, res, next) => { 
+
+app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*') // allow access to all users
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization') // allow certain types of headers
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS') // allow certain types of methods
@@ -40,8 +44,9 @@ app.use(helmet())
 app.use(limiter) // rate limiting applies to all routes
 app.use('/images', express.static(path.join(__dirname, 'images'))) // add image
 
-app.use('/api/auth', userRoutes)
+// Routes
 app.use('/api/sauces', saucesRoutes)
+app.use('/api/auth', userRoutes)
 
 module.exports = app // export to use elsewhere
 
