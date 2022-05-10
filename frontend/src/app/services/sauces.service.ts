@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core'
-import { Subject } from 'rxjs'
-import { Sauce } from '../models/Sauce.model'
-import { HttpClient } from '@angular/common/http'
-import { AuthService } from './auth.service'
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+import { Sauce } from '../models/Sauce.model';
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SaucesService {
 
-  sauces$ = new Subject<Sauce[]>()
+  sauces$ = new Subject<Sauce[]>();
 
   tempSauces = [
     {
@@ -81,7 +81,7 @@ export class SaucesService {
       usersLiked: [],
       usersDisliked: []
     }
-  ]
+  ];
 
   constructor(private http: HttpClient,
               private auth: AuthService) {}
@@ -89,26 +89,26 @@ export class SaucesService {
   getSauces() {
     this.http.get('http://localhost:3000/api/sauces').subscribe(
       (sauces: Sauce[]) => {
-        this.sauces$.next(sauces)
+        this.sauces$.next(sauces);
       },
       (error) => {
-        this.sauces$.next([])
-        console.error(error)
+        this.sauces$.next([]);
+        console.error(error);
       }
-    )
+    );
   }
 
   getSauceById(id: string) {
     return new Promise((resolve, reject) => {
       this.http.get('http://localhost:3000/api/sauces/' + id).subscribe(
         (sauce: Sauce) => {
-          resolve(sauce)
+          resolve(sauce);
         },
         (error) => {
-          reject(error)
+          reject(error);
         }
-      )
-    })
+      );
+    });
   }
 
   likeSauce(id: string, like: boolean) {
@@ -121,13 +121,13 @@ export class SaucesService {
         })
         .subscribe(
           (response: { message: string }) => {
-            resolve(like)
+            resolve(like);
           },
           (error) => {
-            reject(error)
+            reject(error);
         }
-      )
-    })
+      );
+    });
   }
 
   dislikeSauce(id: string, dislike: boolean) {
@@ -140,29 +140,29 @@ export class SaucesService {
         })
         .subscribe(
           (response: { message: string }) => {
-            resolve(dislike)
+            resolve(dislike);
           },
           (error) => {
-            reject(error)
+            reject(error);
           }
-        )
-    })
+        );
+    });
   }
 
   createSauce(sauce: Sauce, image: File) {
     return new Promise((resolve, reject) => {
-      const formData = new FormData()
-      formData.append('sauce', JSON.stringify(sauce))
-      formData.append('image', image)
+      const formData = new FormData();
+      formData.append('sauce', JSON.stringify(sauce));
+      formData.append('image', image);
       this.http.post('http://localhost:3000/api/sauces', formData).subscribe(
         (response: { message: string }) => {
-          resolve(response)
+          resolve(response);
         },
         (error) => {
-          reject(error)
+          reject(error);
         }
-      )
-    })
+      );
+    });
   }
 
   modifySauce(id: string, sauce: Sauce, image: string | File) {
@@ -170,38 +170,38 @@ export class SaucesService {
       if (typeof image === 'string') {
         this.http.put('http://localhost:3000/api/sauces/' + id, sauce).subscribe(
           (response: { message: string }) => {
-            resolve(response)
+            resolve(response);
           },
           (error) => {
-            reject(error)
+            reject(error);
           }
-        )
+        );
       } else {
-        const formData = new FormData()
-        formData.append('sauce', JSON.stringify(sauce))
-        formData.append('image', image)
+        const formData = new FormData();
+        formData.append('sauce', JSON.stringify(sauce));
+        formData.append('image', image);
         this.http.put('http://localhost:3000/api/sauces/' + id, formData).subscribe(
           (response: { message: string }) => {
-            resolve(response)
+            resolve(response);
           },
           (error) => {
-            reject(error)
+            reject(error);
           }
-        )
+        );
       }
-    })
+    });
   }
 
   deleteSauce(id: string) {
     return new Promise((resolve, reject) => {
       this.http.delete('http://localhost:3000/api/sauces/' + id).subscribe(
         (response: { message: string }) => {
-          resolve(response)
+          resolve(response);
         },
         (error) => {
-          reject(error)
+          reject(error);
         }
-      )
-    })
+      );
+    });
   }
 }

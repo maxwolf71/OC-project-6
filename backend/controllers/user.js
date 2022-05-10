@@ -1,7 +1,7 @@
-const User   = require('../models/user')
+const User = require('../models/user')
 
 const bcrypt = require('bcrypt') // hash password
-const jwt    = require('jsonwebtoken') // for creating and verifying token
+const jwt = require('jsonwebtoken') // for creating and verifying token
 
 // SIGNUP **********************************
 exports.signup = (req, res, next) => {
@@ -12,7 +12,7 @@ exports.signup = (req, res, next) => {
                 password: hash // hashed password  
             })
             user.save() // save user in DB
-                .then(() => res.status(201).json({ message: 'User created !' })) 
+                .then(() => res.status(201).json({ message: 'User created !' }))
                 .catch(error => res.status(500).json({ error }))
         })
         .catch(error => res.status(500).json({ error }))
@@ -29,7 +29,7 @@ exports.login = (req, res, next) => {
                 .then(valid => {
                     if (!valid) {  // if password doesn't match
                         return res.status(401).json({ error: 'Password not valid !' })
-                    } 
+                    }
                     res.status(200).json({ // if password matches  
                         userId: user._id,
                         token: jwt.sign(

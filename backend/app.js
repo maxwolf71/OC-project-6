@@ -1,11 +1,9 @@
-
 const express = require('express')
 const mongoose = require('mongoose') // Package to help to communicate with MongoDB
 const path = require('path') // help to generate path for images
 const app = express()
 
 const helmet = require('helmet') // sets up various HTTP headers to prevent attacks like Cross-Site-Scripting(XSS)
-
 
 const userRoutes = require('./routes/user')
 const saucesRoutes = require('./routes/sauce')
@@ -21,6 +19,7 @@ const limiter = rateLimit({
 // MongoDB *******************************************************
 
 require('dotenv').config() // hide MongoDB userName, password & DB name 
+
 const connectionString = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.bjiad.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
 mongoose.connect(connectionString,
     {
